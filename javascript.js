@@ -1,5 +1,87 @@
-function capitalize(text) {
-  return text.at(0).toUpperCase() + text.substring(1);
+let humanScore = 0;
+let computerScore = 0;
+
+document.addEventListener("click", onClick);
+
+function onClick(event) {
+  if (event.target.tagName == "BUTTON") {
+    playRound(event.target.className, getComputerChoice());
+
+    if (humanScore == 5) {
+      const gameOverDiv = document.createElement("div");
+      gameOverDiv.textContent = "Game Over! You win!";
+
+      const resultsDiv = document.querySelector(".results");
+      resultsDiv.appendChild(gameOverDiv);
+
+      document.removeEventListener("click", onClick);
+    } else if (computerScore == 5) {
+      const gameOverDiv = document.createElement("div");
+      gameOverDiv.textContent = "Game Over! You lose!";
+
+      const resultsDiv = document.querySelector(".results");
+      resultsDiv.appendChild(gameOverDiv);
+
+      document.removeEventListener("click", onClick);
+    }
+  }
+}
+
+function playRound(humanChoice, computerChoice) {
+  let winner = getWinner(humanChoice, computerChoice);
+  updateScore(winner);
+  
+  let resultsText = getResultsText(
+    winner, capitalize(humanChoice), capitalize(computerChoice));
+  displayResults(resultsText);
+}
+
+function getWinner(humanChoice, computerChoice) {
+  if (humanChoice == "rock" && computerChoice == "paper") {
+    return "computer";
+  } else if (humanChoice == "rock" && computerChoice == "scissors") {
+    return "human";
+  } else if (humanChoice == "paper" && computerChoice == "rock") {
+    return "human";
+  } else if (humanChoice == "paper" && computerChoice == "scissors") {
+    return "computer";
+  } else if (humanChoice == "scissors" && computerChoice == "rock") {
+    return "computer";
+  } else if (humanChoice == "scissors" && computerChoice == "paper") {
+    return "human";
+  } else {
+    return null;
+  }
+}
+
+function updateScore(winner) {
+  if (winner == "human") {
+    ++humanScore;
+    const scoreDiv = document.querySelector(".human-score");
+    scoreDiv.textContent = `You - ${humanScore}`;
+  } else if (winner == "computer") {
+    ++computerScore;
+    const scoreDiv = document.querySelector(".computer-score");
+    scoreDiv.textContent = `Computer - ${computerScore}`;
+  }
+}
+
+function getResultsText(winner, humanChoice, computerChoice) {
+  switch (winner) {
+    case "human":
+      return `You win! ${humanChoice} beats ${computerChoice}.`;
+    case "computer":
+      return `You lose! ${computerChoice} beats ${humanChoice}.`;
+    default:
+      return `Tie! You both chose ${humanChoice}.`;
+  }
+}
+
+function displayResults(resultsText) {
+  const resultsDiv = document.querySelector(".results");
+  const textDiv = document.createElement("div");
+  textDiv.textContent = resultsText;
+  resultsDiv.appendChild(textDiv);
 }
 
 function getComputerChoice() {
@@ -13,59 +95,6 @@ function getComputerChoice() {
   }
 }
 
-function getHumanChoice() {
-  return prompt("Enter choice (rock, paper, or scissors):").toLowerCase();
+function capitalize(text) {
+  return text.at(0).toUpperCase() + text.substring(1);
 }
-
-function playGame() {
-  function playRound(humanChoice, computerChoice) {
-    let winner = null;
-    if (humanChoice == "rock" && computerChoice == "paper") {
-      winner = "computer";
-    } else if (humanChoice == "rock" && computerChoice == "scissors") {
-      winner = "human";
-    } else if (humanChoice == "paper" && computerChoice == "rock") {
-      winner = "human";
-    } else if (humanChoice == "paper" && computerChoice == "scissors") {
-      winner = "computer";
-    } else if (humanChoice == "scissors" && computerChoice == "rock") {
-      winner = "computer";
-    } else if (humanChoice == "scissors" && computerChoice == "paper") {
-      winner = "human";
-    }
-    
-    humanChoice = capitalize(humanChoice);
-    computerChoice = capitalize(computerChoice);
-  
-    if (winner == "human") {
-      console.log(`You win! ${humanChoice} beats ${computerChoice}.`);
-      ++humanScore;
-    } else if (winner == "computer") {
-      console.log(`You lose! ${computerChoice} beats ${humanChoice}.`);
-      ++computerScore;
-    } else {
-      console.log(`Tie! You both chose ${humanChoice}.`);
-    }
-  }
-
-  let humanScore = 0;
-  let computerScore = 0;
-
-  for (let i = 0; i < 5; ++i) {
-    let humanChoice = getHumanChoice();
-    let computerChoice = getComputerChoice();
-    playRound(humanChoice, computerChoice);
-  }
-
-  if (humanScore > computerScore) {
-    console.log(`You win! Won ${humanScore} rounds. Lost ${computerScore} ` +
-      `rounds.`);
-  } else if (computerScore > humanScore) {
-    console.log(`You lose! Lost ${computerScore} rounds. Won ${humanScore} ` +
-      `rounds.`);
-  } else {
-    console.log(`Tie! You both won ${humanScore} rounds!`);
-  }
-}
-
-playGame();
