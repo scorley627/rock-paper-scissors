@@ -18,14 +18,8 @@ function getHumanChoice() {
 }
 
 function playGame() {
-  let humanScore = 0;
-  let computerScore = 0;
-
-  for (let i = 0; i < 5; ++i) {
-    let humanChoice = getHumanChoice();
-    let computerChoice = getComputerChoice();
+  function playRound(humanChoice, computerChoice) {
     let winner = null;
-  
     if (humanChoice == "rock" && computerChoice == "paper") {
       winner = "computer";
     } else if (humanChoice == "rock" && computerChoice == "scissors") {
@@ -52,6 +46,15 @@ function playGame() {
     } else {
       console.log(`Tie! You both chose ${humanChoice}.`);
     }
+  }
+
+  let humanScore = 0;
+  let computerScore = 0;
+
+  for (let i = 0; i < 5; ++i) {
+    let humanChoice = getHumanChoice();
+    let computerChoice = getComputerChoice();
+    playRound(humanChoice, computerChoice);
   }
 
   if (humanScore > computerScore) {
